@@ -18,7 +18,7 @@ def canUnlockAll(boxes):
         opened.add(box)
         for key in boxes[box]:
             keys.add(key)
-        for key in keys.copy():  # Use copy to avoid modifying set during iteration
+        for key in keys.copy():
             if key < n and key not in opened:
                 dfs(key)
 
