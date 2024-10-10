@@ -1,26 +1,27 @@
+#!/usr/bin/python3
+"""
+You have n number of locked boxes in front of you.
+Each box is numbered sequentially
+from 0 to n - 1 and each box may
+contain keys to the other boxes.
+"""
+
+
 def canUnlockAll(boxes):
     """
-    Determines if all the boxes can be opened.
+     a method that determines if all the boxes can be opened.
 
-    Args:
-        boxes: A list of lists representing the boxes and their keys.
-
-    Returns:
-        True if all boxes can be opened,    else False.
+    :param boxes:
+    :return: True or False
     """
-    n = len(boxes)
-    opened = set()  # Set to keep track of opened boxes
-    keys = set([0])  # Start with key to box 0
+    if not boxes or type(boxes) is not list:
+        return False
 
-    def dfs(box):
-        if box in opened:
-            return
-        opened.add(box)
-        for key in boxes[box]:
-            keys.add(key)
-        for key in keys.copy():
-            if key < n and key not in opened:
-                dfs(key)
-
-    dfs(0)  # Start DFS from box 0
-    return len(opened) == n
+    unlocked = [0]
+    for n in unlocked:
+        for key in boxes[n]:
+            if key not in unlocked and key < len(boxes):
+                unlocked.append(key)
+    if len(unlocked) == len(boxes):
+        return True
+    return False
