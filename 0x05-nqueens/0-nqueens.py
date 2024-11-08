@@ -1,108 +1,54 @@
 #!/usr/bin/python3
-
 """
-N Queens Solver - Places N non-attacking queens on an NxN chessboard
-Usage: ./0-nqueens.py N
-N must be an integer >= 4
+N queens
 """
 
 import sys
 
+if len(sys.argv) != 2:
+    print('Usage: nqueens N')
+    exit(1)
 
-def is_safe(board, row, col, n):
-    """
-    Check if a queen can be placed on board[row][col]
-    """
-    for j in range(col):
-        if board[row][j] == 1:
-            return False
+try:
+    n_q = int(sys.argv[1])
+except ValueError:
+    print('N must ba a number')
+    exit(1)
 
-    # Check upper diagonal on left side
-    i, j = row, col
-    while i >= 0 and j >= 0:
-        if board[i][j] == 1:
-            return False
-        i -= 1
-        j -= 1
-
-    # Check lower diagonal on left side
-    i, j = row, col
-    while i < n and j >= 0:
-        if board[i][j] == 1:
-            return False
-        i += 1
-        j -= 1
-
-    return True
-
-
-def solve_nqueens_util(board, col, n, solutions):
-    """
-    Recursive utility function to solve N Queens problem
-    """
-    if col >= n:
-        solution = []
-        for i in range(n):
-            for j in range(n):
-                if board[i][j] == 1:
-                    solution.append([i, j])
-        solutions.append(solution)
-        return
-    for i in range(n):
-        if is_safe(board, i, col, n):
-            # Place this queen in board[i][col]
-            board[i][col] = 1
-
-            # Recur to place rest of the queens
-            solve_nqueens_util(board, col + 1, n, solutions)
-
-            # Backtrack: remove queen from board[i][col]
-            board[i][col] = 0
+if n_q < 4:
+    print('N must ba at least 4')
+    exit(1)
 
 
 def solve_nqueens(n):
-    """
-    Main function to solve N Queens problem
-    Args:
-        n: Size of the board
-    """
-    # Initialize the chessboard
-    board = [[0 for x in range(n)] for y in range(n)]
-
-    # List to store all solutions
-    solutions = []
-
-    # Start from the first column
-    solve_nqueens_util(board, 0, n, solutions)
-
-    # Print all solutions
-    for sol in solutions:
-        print(sol)
+    ''' self descriptive '''
+    if n == 0:
+        return [[]]
+    inner_solution = solve_nqueens(n - 1)
+    return [solution + [(n, i + 1)]
+            for i in range(n_q)
+            for solution in inner_solution
+            if safe_queen((n, i + 1), solution)]
 
 
-def main():
-    """
-    Main function to handle command line arguments and program execution
-    """
-    # Check correct number of arguments
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-
-    # Parse and validate N
-    try:
-        n = int(sys.argv[1])
-    except ValueError:
-        print("N must be a number")
-        sys.exit(1)
-
-    if n < 4:
-        print("N must be at least 4")
-        sys.exit(1)
-
-    # Solve the N Queens problem
-    solve_nqueens(n)
+def attack_queen(square, queen):
+    '''self descriptive'''
+    (row1, col1) = square
+    (row2, col2) = queen
+    return (row1 == row2) or (col1 == col2) or\
+        abs(row1 - row2) == abs(col1 - col2)
 
 
-if __name__ == "__main__":
-    main()
+def safe_queen(sqr, queens):
+    '''self descriptive'''
+    for queen in queens:
+        if attack_queen(sqr, queen):
+            return False
+    return True
+
+
+for answer in reversed(solve_nqueens(n_q)):
+    result = []
+    for p in [list(p) for p in answer]:
+        result.append([i - 1 for i in p])
+    print(result)
